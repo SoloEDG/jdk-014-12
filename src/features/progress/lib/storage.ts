@@ -2,19 +2,25 @@ import type {
   ComicDocument,
   Bookmark,
   ReadingLocation,
+  ReadingMode,
 } from "../../../shared/document";
 const KEY = "panel-jdk014-v1";
 export interface SavedSession {
   document: ComicDocument;
   location: ReadingLocation;
   bookmarks: Bookmark[];
+  mode: ReadingMode;
+}
+function readMode(value: unknown): ReadingMode {
+  return value === "panel" || value === "page" ? value : "page";
 }
 export function readSession(): SavedSession | null {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return null;
-    const value = JSON.parse(raw) as SavedSession;
+    const value = JSON.parse(raw) as Partial<SavedSession> | null;
     if (
+      !value ||
       value.document?.version !== 1 ||
       !Array.isArray(value.document.chapters) ||
       !value.document.chapters.length ||
@@ -27,7 +33,12 @@ export function readSession(): SavedSession | null {
       for (const p of c.pages)
         if (!p.panels?.length || typeof p.image !== "string") return null;
     }
-    return value;
+    return {
+      document: value.document,
+      location: value.location,
+      bookmarks: value.bookmarks,
+      mode: readMode(value.mode),
+    };
   } catch {
     return null;
   }

@@ -7,9 +7,9 @@ import { useProgress, readSession } from "../features/progress";
 export function useWorkspace() {
   const saved = readSession(),
     doc = ref(saved?.document ?? demoDocument()),
-    reader = useReader(doc);
+    reader = useReader(doc, saved?.mode ?? "page");
   if (saved) reader.dispatch({ type: "restore", location: saved.location });
-  const progress = useProgress(doc, reader.location, saved),
+  const progress = useProgress(doc, reader.location, reader.mode, saved),
     library = useLibrary(doc, (id) => {
       reader.dispatch({ type: "chapter", id });
       progress.reconcile();

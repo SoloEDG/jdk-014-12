@@ -3,6 +3,7 @@ import type {
   Bookmark,
   ComicDocument,
   ReadingLocation,
+  ReadingMode,
 } from "../../../shared/document";
 import { makeId } from "../../../shared/commands";
 import { writeSession, type SavedSession } from "../lib/storage";
@@ -10,6 +11,7 @@ import { readingMetrics } from "../lib/metrics";
 export function useProgress(
   doc: Ref<ComicDocument>,
   location: Ref<ReadingLocation>,
+  mode: Ref<ReadingMode>,
   saved: SavedSession | null,
 ) {
   const bookmarks = ref<Bookmark[]>(saved?.bookmarks ?? []),
@@ -20,9 +22,10 @@ export function useProgress(
       document: doc.value,
       location: location.value,
       bookmarks: bookmarks.value,
+      mode: mode.value,
     });
   }
-  watch([doc, location, bookmarks], save, { deep: true });
+  watch([doc, location, bookmarks, mode], save, { deep: true });
   function add() {
     const same = bookmarks.value.find(
       (b) =>

@@ -15,7 +15,7 @@ export function normalize(
     chapterId: chapter.id,
     pageId: page.id,
     panelId: panel.id,
-    zoom: Math.max(1, Math.min(3, at.zoom)),
+    zoom: Number.isFinite(at.zoom) ? Math.max(1, Math.min(3, at.zoom)) : 1,
     x: Number.isFinite(at.x) ? at.x : 0,
     y: Number.isFinite(at.y) ? at.y : 0,
   };

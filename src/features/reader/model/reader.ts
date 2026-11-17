@@ -8,9 +8,9 @@ import type { ReaderCommand } from "../../../shared/commands";
 import { firstLocation, resolveLocation } from "../../../shared/lookup";
 import { normalize, advance } from "../lib/navigation";
 import { constrainPan } from "../lib/viewport";
-export function useReader(doc: Ref<ComicDocument>) {
+export function useReader(doc: Ref<ComicDocument>, initialMode: ReadingMode = "page") {
   const location = ref<ReadingLocation>(firstLocation(doc.value)),
-    mode = ref<ReadingMode>("page");
+    mode = ref<ReadingMode>(initialMode);
   const current = computed(() => resolveLocation(doc.value, location.value));
   function dispatch(command: ReaderCommand) {
     let at = { ...location.value };
